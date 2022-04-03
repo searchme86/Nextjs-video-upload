@@ -1,21 +1,67 @@
 import Head from 'next/head';
-import Image from 'next/image';
-import styles from '../styles/Home.module.css';
+import Banner from '../components/Banner';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+import LargeCard from '../components/LargeCard';
+import MediumCard from '../components/MediumCard';
+import SmallCard from '../components/SmallCard';
 
-export default function Home() {
+export default function Home({ exploreDate, cardsData }) {
   return (
-    <div className="bg-gray-700">
+    <div className="">
       <Head>
-        <title>Cloudinary Video upload App</title>
+        <title>clone</title>
       </Head>
-      <main className="flex h-screen justify-center items-center text-white">
-        <div className="text-center bg-blue-500 p-10 rounded-lg shadow-2xl">
-          <h1 className="text-3xl front-bold">
-            Next.js Video Upload to Cloudinary Demo
-          </h1>
-          <p className="pt-5 text-xl">Demo by rohkorea86</p>
-        </div>
+
+      <Header />
+      <Banner />
+      <main className="max-w-7xl mx-auto px-8 sm:px-16">
+        <section className="pt-6">
+          <h2 className="text-4xl font-semibold pb-5 ">Explore Nearby</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {exploreDate?.map((item) => (
+              <SmallCard
+                key={item.img}
+                img={item.img}
+                distance={item.distance}
+                location={item.location}
+              />
+            ))}
+          </div>
+        </section>
+        <section>
+          <h2 className="text-4xl font-semibold py-8">Live Anywhere</h2>
+          <div className="flex space-x-3 overflow-scroll scrollbar-hide p-3 -ml-3">
+            {cardsData?.map(({ img, title }) => (
+              <MediumCard key={img} img={img} title={title} />
+            ))}
+          </div>
+        </section>
+        <LargeCard
+          img="https://links.papareact.com/4cj"
+          title="The Greate Outedoors"
+          description="Wishlists curated by Airbnb"
+          buttonText="Get Inspired"
+        />
       </main>
+      <Footer />
     </div>
   );
+}
+
+export async function getStaticProps() {
+  const exploreDate = await fetch('https://links.papareact.com/pyp')
+    .then((response) => response.json())
+    .catch((error) => console.log('error', error));
+
+  const cardsData = await fetch('https://links.papareact.com/zp1')
+    .then((response) => response.json())
+    .catch((error) => console.log('error', error));
+
+  return {
+    props: {
+      exploreDate,
+      cardsData,
+    },
+  };
 }
